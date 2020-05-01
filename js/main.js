@@ -14,20 +14,25 @@ ctx.fillRect(canvas.clientWidth / 2, 0, canvas.clientWidth - canvas.clientWidth 
 
 //Преобразование RGB в Hex
 function rgbToHex(R, G, B) {
-    return toHex(R) + toHex(G) + toHex(B);
-}
+    R = R.toString(16);
 
-//Нахождение hex, принимает один из цветовых каналов rgb
-function toHex(n) {
-    n = parseInt(n, 10);
-
-    if (isNaN(n)) {
-        return "00";
+    if (R.length == 1) {
+        R = '0' + R;
     }
 
-    n = Math.max(0, Math.min(n, 255));
+    G = G.toString(16);
 
-    return "0123456789ABCDEF".charAt((n - n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16);
+    if (G.length == 1) {
+        G = '0' + G;
+    }
+
+    B = B.toString(16);
+
+    if (B.length == 1) {
+        B = '0' + B;
+    }
+
+    return (R + G + B).toUpperCase();
 }
 
 //Добавление слушателя событий для canvas, захватываем результат на этапе всплывания события
