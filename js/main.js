@@ -30,3 +30,30 @@ function toHex(n) {
     return "0123456789ABCDEF".charAt((n - n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16);
 }
 
+//Добавление слушателя событий для canvas, захватываем результат на этапе всплывания события
+canvas.addEventListener('click', function (event) {
+    //Объявление переменных
+    let x, y, imageData, R, G, B, RGB, Hex;
+
+    //Получение координат клика мыши
+    x = event.pageX - this.offsetLeft;
+    y = event.pageY - this.offsetTop;
+
+    //Получение цвета пикселя
+    imageData = ctx.getImageData(x, y, 1, 1).data;
+
+    //Разделение цветовых каналов
+    R = imageData[0];
+    G = imageData[1];
+    B = imageData[2];
+
+    //Формирование RGB строки
+    RGB = R + ',' + G + ',' + B;
+
+    //Формирование Hex строки
+    Hex = rgbToHex(R, G, B);
+
+    //Вывод значений
+    document.getElementById('rgb').value = RGB;
+    document.getElementById('hex').value = '#' + Hex;
+}, false);
