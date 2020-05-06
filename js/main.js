@@ -8,6 +8,18 @@ let ctx = canvas.getContext('2d');
 ctx.fillStyle = 'rgba( 255 , 255, 255, 1)';
 ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
+function download(filename, text) {
+    let fileLink = document.createElement('a');
+    fileLink.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    fileLink.setAttribute('download', filename);
+    fileLink.style.display = 'none';
+
+    document.body.appendChild(fileLink);
+
+    fileLink.click();
+
+    document.body.removeChild(fileLink);
+}
 //Цвет 1
 ctx.fillStyle = 'rgba( 20 , 100 , 150, 0.5)';
 ctx.fillRect(canvas.clientWidth / 2, 0, canvas.clientWidth - canvas.clientWidth / 2, canvas.clientHeight / 2);
