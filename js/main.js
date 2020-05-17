@@ -16,47 +16,45 @@ let fileBody = {};
 let imageData2;
 //============================>
 // const start = new Date().getTime();
-let usR = localStorage.getItem('usR');
-let usG = 0;
-let usB = 0;
-let ff = false;
-let a = localStorage.getItem('a');
+let obb = JSON.parse(localStorage.getItem('obb'))
 
-//альфа канал 1-99
-if (!a) {
-    localStorage.setItem('a', 1);
-    a = localStorage.getItem('a');
-}
+if (!obb) {
+    obb = {
+        "usR": 1,
+        "usG": 0,
+        "usB": 0,
+        "usA": 1,
+        "ff": false,
+        "dow": {}
+    };
 
-//under side RED
-if (!usR) {
-    localStorage.setItem('usR', 1);
-    usR = localStorage.getItem('usR');
+    obb.dow[`${obb.usR},${obb.usG},${obb.usB}`] = [];
+
+    localStorage.setItem('obb', JSON.stringify(obb));
 }
 
 //Основной цикл
-if (a < 100) {
+if (obb.usA < 100) {
     pick();
     location.href = location.href;
 }
 
 //Запаковка в файл
-if (a == 100) {
-    lsToFile();
-    download(`${usR},0,0.txt`, `'${JSON.stringify(fileBody)}'`);
-    a++;
-    localStorage.setItem('a', a);
-    ff = true;
-
-    console.log('Конец!');
+if (obb.usA == 100) {
+    download(`${obb.usR},${obb.usG},${obb.usB}.txt`, `'${JSON.stringify(obb.dow)}'`);
+    obb.usA++;
+    obb.ff = true;
 }
 
 //Увеличение under side RED на 1
-if (a == 101 && ff) {
+if (obb.usA == 101 && obb.ff) {
     setTimeout(() => alert('Привет'), 1000);
-    usR++;
+    obb.usR++;
+    obb.usA = 1;
+    obb.ff = false;
+    obb.dow[`${obb.usR},${obb.usG},${obb.usB}`] = [];
     localStorage.clear();
-    localStorage.setItem('usR', usR);
+    localStorage.setItem('obb', JSON.stringify(obb));
 }
 
 // const end = new Date().getTime();
@@ -64,35 +62,19 @@ if (a == 101 && ff) {
 //============================>
 
 function pick() {
-    // for (let usA = 96; usA < 99; usA++) {
-    // if ((usA + '').length == 1) {
-    //     alpha = '0.0' + usA - 0;
-    // }
-    // if ((usA + '').length == 2) {
-    //     alpha = '0.' + usA - 0;
-    // }
-
     ctx.fillStyle = 'rgba( ' + fillColor + ',1)';
     ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-    ctx.fillStyle = `rgba( ${usR} ${usG} ${usB} / ${a}%)`;
+    ctx.fillStyle = `rgba( ${obb.usR} ${obb.usG} ${obb.usB} / ${obb.usA}%)`;
     ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
     imageData2 = ctx.getImageData(0, 0, 1, 1).data;
 
-    localStorage.setItem(a, `${imageData2[0]},${imageData2[1]},${imageData2[2]}`);
+    obb.dow[`${obb.usR},${obb.usG},${obb.usB}`].push(`${imageData2[0]},${imageData2[1]},${imageData2[2]}`);
 
-    a++;
+    obb.usA++;
 
-    localStorage.setItem('a', a);
-}
-
-function lsToFile() {
-    for (let i = 1; i < 100; i++) {
-        mass.push(localStorage.getItem(i));
-
-        fileBody[`${usR},${usG},${usB}`] = mass;
-    }
+    localStorage.setItem('obb', JSON.stringify(obb));
 }
 
 function download(filename, text) {
